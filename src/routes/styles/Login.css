@@ -1,0 +1,21 @@
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 1rem;
+  font-family: var(--font-main);
+}
+
+.login-container {
+  width: 100%;
+  max-width: 25rem;
+  background-color: var(--bg-lighter);
+  padding: 3rem;
+  border-radius: 0.2rem;
+}
+
+.login-container h1 {
+    color: var(--text-secondary);
+}

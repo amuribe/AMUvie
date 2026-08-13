@@ -1,0 +1,60 @@
+/* More compact than regular container */
+.watchlist-edit-container {
+    max-width: 50rem;
+    margin: 0 auto;
+    padding: var(--space-3xl) var(--space-l)
+}
+
+.watchlist-form-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2xl);
+}
+.watchlist-form-field label {
+    color: var(--text-primary);
+}
+
+.watchlist-form-field input {
+    max-width: 6rem;
+    color: var(--text-secondary);
+}
+
+.watchlist-form-field textarea {
+    width: 100%;
+    min-height: 10rem;
+    color: var(--text-secondary);
+}
+
+
+
+/* Push save and cancel to end of form container */
+.watchlist-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-s)
+}
+
+.watchlist-form-actions button {
+    min-width: 7rem;
+    padding: var(--space-s) var(--space-l);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+}
+
+.watchlist-cancel-button {
+    background: transparent;
+    color: var(--text-primary);
+}
+
+.watchlist-cancel-button:hover {
+  filter: brightness(2);
+}
+
+.watchlist-save-button {
+    background-color: var(--accent);
+    color: var(--text-primary);
+}
+
+.watchlist-save-button:hover {
+  filter: brightness(1.2);
+}

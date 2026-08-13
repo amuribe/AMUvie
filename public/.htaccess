@@ -1,0 +1,10 @@
+#enable apache rewrite engine
+RewriteEngine On
+
+# RewriteCond is used to determine conditions under which a RewriteRule will be applied
+# If file exists serve it directly (don't rewrite to index.html)
+RewriteCond %{REQUEST_FILENAME} !-f
+# If directory exists serve it directly (don't rewrite to index.html)
+RewriteCond %{REQUEST_FILENAME} !-d
+#push every remaining request to index.html (Last rule)
+RewriteRule ^ index.html [L]

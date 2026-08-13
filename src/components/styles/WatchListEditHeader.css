@@ -1,0 +1,68 @@
+.watchlist-edit-header {
+    display: grid;
+    grid-template-columns: 7rem minmax(0, 1fr);
+    align-items: center;
+
+    gap: var(--space-xl);
+    /* Add space between header and content */
+    margin-bottom: var(--space-2xl);
+    padding: var(--space-xl);
+
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+}
+
+/* Poster dimensions remain the same whether or not there is an image */
+.watchlist-edit-poster-container {
+    width: 7rem;
+    aspect-ratio: 2 / 3;
+    overflow: hidden;
+    background-color: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+
+
+}
+
+
+/* Image fills entire poster container */
+.watchlist-edit-poster {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+.watchlist-edit-poster-fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    height: 100%;
+
+    /* Border box to prevent overflow */
+    box-sizing: border-box;
+
+    padding: var(--space-s);
+    text-align: center;
+    color: var(--text-primary);
+    font-weight: bold;
+}
+   
+.watchlist-edit-label {
+        color: var(--accent);
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+}
+
+.watchlist-edit-header-content h1 {
+    margin: 0 0 var(--space-m);
+    text-align: left;
+
+}
+
+.watchlist-edit-header-content p {
+    margin: 0;
+    color: var(--text-muted-primary);
+}

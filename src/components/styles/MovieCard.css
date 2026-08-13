@@ -1,0 +1,119 @@
+.movie-card {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bg-lighter);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    position: relative;
+    height: 100%;
+}
+
+/* Add a visual indication for which card is being hovered */
+.movie-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 12px var(--accent);
+}
+
+.movie-poster-container {
+    width: 100%;
+    /* The Standard movie poster aspect ration is 2:3 so make the container follow (even when no image is provided)*/
+    aspect-ratio: 2 / 3;
+    background-color: var(--bg-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.movie-poster {
+    width: 100%;
+    height: 100%;
+    /* Preservers aspect ratio */
+    object-fit: cover;
+}
+
+.movie-poster-fallback {
+    padding: 1rem;
+    text-align: center;
+    color: var(--text-primary);
+    font-weight: bold;
+}
+
+.movie-details {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: var(--space-s) var(--space-l);
+    background-color: var(--bg-lighter);
+}
+
+.movie-title {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    /* Truncate titles if too long */
+    white-space: nowrap;
+    overflow: hidden;
+    /* If full title can't be rendered put ellipsis at end*/
+    text-overflow: ellipsis;
+}
+
+.movie-rating {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+    font-size: 0.9rem;
+    margin-top: auto;
+    color: var(--text-muted-secondary);
+}
+
+.movie-card-actions {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    /* Put actions in front of poster */
+    z-index: 2;
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    /* For fade in */
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+/* Only show actions when movie is hovered */
+.movie-card:hover .movie-card-actions {
+    opacity: 1;
+}
+
+.quick-add-btn {
+    display: grid;
+    width: var(--space-2xl);
+    height: var(--space-2xl);
+    padding: 0;
+    align-items: center;
+    justify-items: center;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+
+    background-color: rgba(26, 23, 23, 0.5);
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    font-weight: bold;
+}
+
+.quick-add-btn:hover:not(:disabled) {
+    transform: scale(1.05);
+    background-color: var(--bg-lighter);
+}
+
+
+.quick-add-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}

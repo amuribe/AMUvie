@@ -1,0 +1,44 @@
+.navbar {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    padding: 1rem 2rem;
+    background-color: var(--bg-dark);
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.navbar a {
+    color: var(--text-primary);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1rem;
+    transition: color 0.3s ease, border-bottom 0.3s ease;
+    padding: 0.5rem 0.75rem;
+    border-bottom: 2px solid transparent;
+}
+
+.navbar a:hover {
+    color: var(--accent);
+}
+
+/* Add an underline on the link for the page you are currently on */
+.navbar a.active {
+    color: var(--accent);
+    border-bottom: 2px solid var(--accent);
+}
+
+.navbar a:first-child {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--accent);
+    margin-right: 1rem;
+    border-bottom: none;
+}
+
+/* For Icon / homepage navlink */
+.navbar a:first-child:hover {
+    color: var(--primary-hover);
+}

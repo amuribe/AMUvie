@@ -1,0 +1,213 @@
+.movies-page {
+    padding: 2rem;
+    margin-inline: auto;
+}
+
+.movies-page h1 {
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.movies-page-subtitle {
+    margin: var(--space-m) 0 0;
+    color: var(--text-muted-primary);
+}
+
+.pagination {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    gap: var(--space-l);
+    margin-top: var(--space-2xl);
+}
+
+.movies-page-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+}
+
+
+.movies-page-filters {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(12rem, 18rem);
+    column-gap: var(--space-l);
+    align-items: end;
+    padding: var(--space-m);
+    border: 1px solid var(--border-color);
+    border-radius: 1rem;
+    box-shadow: 0 1rem 2.5rem rgb(0 0 0 / 0.18);
+}
+
+
+.movies-page-filter {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-m);
+    min-width: 0;
+
+}
+
+.movies-page-filter label {
+    display: block;
+    margin: 0;
+    color: var(--text-muted-primary);
+    font-size: 0.8rem;
+    font-weight: 700;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+/* Target genre dropdown */
+.movies-page-filter > *:last-child {
+    width: 100%;
+}
+
+.movies-page-filters :where(form) {
+    display: flex;
+    gap: var(--space-m);
+    align-items: end;
+}
+
+.movies-page-filters :where(input, select) {
+    min-height: 2.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.65rem;
+    background: var(--bg-lighter);
+    color: var(--text-secondary);
+    font: inherit;
+}
+
+.movies-page-filters :where(input) {
+    min-width: 0;
+    flex: 1 1 auto;
+    padding-inline: 0.85rem;
+}
+
+.movies-page-filters :where(select) {
+    width: 100%;
+    padding-inline: 0.75rem 2rem;
+}
+
+.movies-page-filters :where(input, select):focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--primary-color) 35%, transparent);
+    outline-offset: 2px;
+    border-color: var(--primary-color);
+}
+
+.movies-page-filters :where(button) {
+    min-height: 2.75rem;
+    border: 0;
+    border-radius: 0.65rem;
+    padding-inline: 1.15rem;
+    background: var(--primary-color);
+    color: var(--text-secondary);
+    font: inherit;
+    font-weight: 800;
+    cursor: pointer;
+    transition: background-color 160ms ease, transform 160ms ease;
+}
+
+.movies-page-filters :where(button):hover {
+    background: var(--primary-hover);
+}
+
+.movies-page-filters :where(button):active,
+.movies-page-clear-button:active,
+.pagination-button:active,
+.movies-page-empty button:active {
+    transform: translateY(1px);
+}
+
+
+.movies-page-results {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-l);
+    /* Add space between this and card grid */
+    margin-block: var(--space-xl) var(--space-m);
+    padding-bottom: var(--space-m);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.movies-page-results p {
+    margin: 0;
+    color: var(--text-muted-primary);
+    font-size: 0.9rem;
+}
+
+.movies-page-results p:first-child {
+    color: var(--text-primary);
+    font-weight: 700;
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 13rem), 1fr));
+    gap: var(--space-l);
+}
+
+
+
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-l);
+    margin-top: var(--space-2xl);
+}
+
+.pagination-button {
+    min-width: 7rem;
+    background: transparent;
+    color: var(--text-primary);
+}
+
+.pagination-button:not(:disabled):hover {
+    border-color: var(--primary-color);
+    color: var(--primary-hover);
+}
+
+.pagination-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+}
+
+
+/* No movies found styles */
+.movies-page-empty {
+    display: grid;
+    justify-items: center;
+    gap: var(--space-m);
+    padding: var(--space-2xl) var(--space-l);
+    border: 1px dashed var(--border-color);
+    border-radius: 1rem;
+    text-align: center;
+}
+
+.movies-page-empty h2,
+.movies-page-empty p {
+    margin: 0;
+}
+
+.movies-page-empty h2 {
+    color: var(--text-primary);
+}
+
+.movies-page-empty p {
+    color: var(--text-muted-primary);
+}
+
+.movies-page-empty button {
+    margin-top: var(--space-m);
+    border-color: var(--primary-color);
+    background: var(--primary-color);
+    color: var(--text-secondary);
+}
+
+.movies-page-empty button:hover {
+    background: var(--primary-hover);
+}
+
+

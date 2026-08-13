@@ -1,0 +1,10 @@
+#enable apache rewrite engine
+RewriteEngine On
+
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+
+#push every request to index.php
+RewriteRule ^(.+)$ index.php [QSA,L]

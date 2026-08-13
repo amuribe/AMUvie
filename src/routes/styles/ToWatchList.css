@@ -1,0 +1,124 @@
+.entry-count {
+    display: block;
+    margin-bottom: 2rem;
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 500;
+}
+
+.towatchlist-content {
+    width: 100%;
+}
+
+.towatchlist-entries {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+/* Marked as watched form and panel styles */
+.mark-watched-panel {
+    width: min(100%);
+    margin: var(--space-xl) auto;
+    padding: var(--space-xl);
+    border: 1px solid var(--border-color);
+    border-radius: 0.75rem;
+    background: var(--bg-lighter);
+    color: var(--text-secondary);
+}
+
+.mark-watched-panel h2 {
+    margin: 0 0 var(--space-xl);
+    color: var(--text-secondary);
+    font-size: 1.5rem;
+    line-height: 1.2rem;
+    text-align: center;
+}
+
+
+.mark-watched-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-l);
+}
+
+.mark-watched-fields {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(8rem, 0.6fr) minmax(12rem, 1fr);
+    gap: var(--space-l);
+    align-items: end;
+}
+
+.mark-watched-form input[type="date"] {
+    min-width: 12rem;
+}
+
+.mark-watched-form .watchlist-form-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-s);
+    min-width: 0;
+}
+
+/* Override formfield white text */
+.mark-watched-panel .watchlist-form-field,
+.mark-watched-panel .watchlist-form-field label {
+    color: var(--text-secondary);
+}
+
+.mark-watched-form label, .mark-watched-panel label {
+    color: var(--text-secondary);
+    font-weight: 650;
+}
+
+.mark-watched-form input,
+.mark-watched-form select {
+    width: 100%;
+    min-height: 2.75rem;
+    padding: 0.6rem 0.75rem;
+    box-sizing: border-box;
+
+    border: 1px solid var(--border-color);
+    border-radius: 0.3rem;
+    background: #fff;
+    color: var(--text-secondary);
+    font: inherit;
+}
+
+.mark-watched-form input:focus,
+.mark-watched-form select:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+.mark-watched-form .watchlist-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-m);
+    margin-top: var(--space-s);
+}
+
+.mark-watched-help {
+    margin: 0;
+    color: var(--text-muted-secondary);
+}
+.mark-watched-help p {
+    margin: 0;
+}
+
+/* Override edit-page button colors inside the light panel */
+.mark-watched-form .watchlist-cancel-button {
+    border: 1px solid var(--border-color);
+    background: transparent;
+    color: var(--text-secondary);
+}
+.mark-watched-form .watchlist-save-button {
+    border: 1px solid var(--accent);
+    background: var(--accent);
+    color: #fff;
+}
+
+.mark-watched-form button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
