@@ -6,6 +6,7 @@ import { apiRequest } from "../utils/api";
 import { RATING_OPTIONS } from "../constants/ratingOptions";
 import './styles/WatchListEdit.css';
 import { Dropdown } from "../components/Dropdown";
+import { useToast } from "../context/toast";
 import WatchListEditHeader from "../components/WatchListEditHeader";
 
 export default function CompletedWatchlistEdit() {
@@ -13,6 +14,7 @@ export default function CompletedWatchlistEdit() {
     const { id: entryId } = useParams();
     const navigate = useNavigate();
     const { apiKey } = useAuth();
+    const { showToast } = useToast();
 
 
     // Use route state to access the movie assosciated with the entry
@@ -28,8 +30,6 @@ export default function CompletedWatchlistEdit() {
     const [savingRating, setSavingRating] = useState<boolean>(false);
     const [savingTimesWatched, setSavingTimesWatched] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
-    // Display if update was successful
-    const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
 
     // Fetch the entry's rating and times watched 
@@ -73,10 +73,9 @@ export default function CompletedWatchlistEdit() {
 
     const handleUpdateRating = async (e: SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setError(null);
 
         if (!apiKey || !entryId) {
-            setError("Invalid completed watchlist entry");
+            showToast("Invalid completed watchlist entry", "error");
             return;
         }
 
@@ -84,7 +83,7 @@ export default function CompletedWatchlistEdit() {
         const numericRating = Number(rating);
         // Ensure rating is valid (don't quite know how a value other than the dropdown would be provided but might as well leave this if there is one)
         if (numericRating < 0 || numericRating > 10) {
-            setError("Rating must be between 0.0 and 10.0");
+            showToast("Rating must be a number between 0.0 and 10.0", "error");
             return;
         }
 
@@ -98,27 +97,14 @@ export default function CompletedWatchlistEdit() {
                 apiKey
             );
 
-            setSuccessMessage("Rating updated successfully.");
-
+            showToast("Rating updated");
         } catch (error) {
-            setError(error instanceof Error ? error.message : "Unable to update the rating.");
+           showToast(error instanceof Error ? error.message : "Unable to update the rating.", "error");
         } finally {
             setSavingRating(false);
         }
     };
 
-    // Clear success message after 3 seconds
-    useEffect(() => {
-        if (!successMessage) {
-            return;
-        }
-
-        const timeoutId = window.setTimeout(() => {
-            setSuccessMessage(null);
-        }, 3000)
-
-        return () => window.clearTimeout(timeoutId);
-    }, [successMessage]);
 
     // Clear error messages after 5 seconds
     useEffect(() => {
@@ -135,24 +121,19 @@ export default function CompletedWatchlistEdit() {
 
     const handleUpdateTimesWatched = async (e: SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
-        // Clear previous error and success messages
-        setError(null);
-        setSuccessMessage(null);
 
         if (!apiKey || !entryId) {
-            setError("Invalid completed watchlist entry");
+            showToast("Invalid completed watchlist entry", "error");
             return;
         }
 
         // Make sure times watched is valid (whole number)
         if (!Number.isInteger(timesWatched) || timesWatched < 1) {
-            setError("Times watched must be a whole number of at least 1");
+            showToast("Times watched must be a whole number of at least 1", "error");
             return;
         }
 
-
         setSavingTimesWatched(true);
-
         try {
             await apiRequest<void>(
                 `/completedwatchlist/entries/${entryId}/times-watched`,
@@ -161,10 +142,10 @@ export default function CompletedWatchlistEdit() {
                 apiKey
             );
 
-            setSuccessMessage("Times watched updated successfully");
+            showToast("Times watched updated");
 
         } catch (error) {
-            setError(error instanceof Error ? error.message : "Unable to update times watched.");
+            showToast(error instanceof Error ? error.message : "Unable to update times watched.", "error");
         } finally {
             setSavingTimesWatched(false);
         }
@@ -178,7 +159,6 @@ export default function CompletedWatchlistEdit() {
         <div className="watchlist-edit-container">
             {/* If there is a status message, render it */}
             {error && <div className="error-message">{error}</div>}
-            {successMessage && <div className="success-message" role="status" aria-live="polite">{successMessage}</div>}
 
             <WatchListEditHeader
                 title={movie?.title ?? "Edit Entry"}

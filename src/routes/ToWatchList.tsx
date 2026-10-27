@@ -6,14 +6,15 @@ import WatchListCard from "../components/WatchListCard";
 import './styles/ToWatchList.css'
 import { Dropdown } from "../components/Dropdown";
 import { RATING_OPTIONS } from "../constants/ratingOptions";
+import { useToast } from "../context/toast";
 
 export default function ToWatchList() {
     // Ensure user is authorized
     const { apiKey } = useAuth();
+    const { showToast } = useToast();
 
     const [watchlist, setWatchList] = useState<ToWatchListEntryWithMovie[]>([])
     const [error, setError] = useState<string | null>(null);
-    const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     // Controls the order entries are sorted by priority (desc by default)
     const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
@@ -71,17 +72,13 @@ export default function ToWatchList() {
 
     const handleDelete = async (entryId: number) => {
         if (!apiKey) {
-            setError("Not authorized");
+            showToast("You must be logged in to do this", "error");
             return;
         }
 
         // For rollbacks if error
         const prevWatchlist = watchlist;
         try {
-            // Clear previous status
-            setError(null);
-            setSuccessMessage(null);
-
             await apiRequest<void>(
                 `/towatchlist/entries/${entryId}`,
                 "DELETE",
@@ -93,11 +90,10 @@ export default function ToWatchList() {
                 current.filter((entry) => entry.id !== entryId)
             );
 
-            setSuccessMessage("Entry was deleted");
+            showToast("Entry was deleted");
         } catch (error) {
             setWatchList(prevWatchlist);
-            setError(
-                error instanceof Error ? error.message : "Failed to delete entry.");
+            showToast(error instanceof Error ? error.message : "Failed to delete entry.", "error");
         }
 
     };
@@ -109,7 +105,7 @@ export default function ToWatchList() {
     ) => {
         if (!apiKey) {
             // Clear previous errors
-            setError("Not authorized");
+            showToast("You must be logged in to do this", "error");
             return;
         }
 
@@ -117,9 +113,6 @@ export default function ToWatchList() {
         const prevWatchlist = watchlist;
 
         try {
-            // Clear previous status
-            setError(null);
-            setSuccessMessage(null);
             // Find the entry in state
             const entry = watchlist.find(e => e.id === entryId);
             // If entry doesn't exist return
@@ -147,8 +140,7 @@ export default function ToWatchList() {
         } catch (error) {
             // Rollback changes
             setWatchList(prevWatchlist)
-            setError(
-                error instanceof Error ? error.message : "Failed to update priority");
+            showToast(error instanceof Error ? error.message : "Failed to update priority", "error");
         }
     };
 
@@ -160,8 +152,6 @@ export default function ToWatchList() {
     }
     // Setup the form and scroll up
     const handleMarkAsWatched = (entry: ToWatchListEntryWithMovie) => {
-        setError(null);
-        setSuccessMessage(null);
         setEntryToComplete(entry);
         setRating("5.0");
         setDateWatched(new Date().toISOString().split("T")[0])
@@ -179,10 +169,9 @@ export default function ToWatchList() {
     ) => {
         event.preventDefault();
         setError(null);
-        setSuccessMessage(null);
 
         if (!apiKey || !entryToComplete) {
-            setError("Invalid watchlist entry.")
+            showToast("Invalid watchlist entry.")
             return;
         }
 
@@ -238,11 +227,11 @@ export default function ToWatchList() {
                 // Filter out the movie that was just deleted
                 setWatchList((current) => current.filter((entry) => entry.id !== entryToComplete.id));
 
-                setSuccessMessage(`${entryToComplete.movie?.title ?? "Movie"} was marked as watched.`)
+                showToast(`${entryToComplete.movie?.title ?? "Movie"} was marked as watched.`)
                 setEntryToComplete(null);
 
-            } catch {
-                setError("Movie added to completed watchlist, but the to-watch list entry could not be removed. Try deleting manually");
+            } catch (error) {
+                showToast(error instanceof Error ? error.message : "Movie added to completed watchlist, but the to-watch list entry could not be removed. Try deleting manually", "error", 6000);
                 setEntryToComplete(null);
                 return;
             }
@@ -250,7 +239,7 @@ export default function ToWatchList() {
 
 
         } catch (error) {
-            setError(error instanceof Error ? error.message : "Unable to mark movie as watched.");
+            showToast(error instanceof Error ? error.message : "Unable to mark movie as watched.", "error");
         } finally {
             setEntryIsMoving(false);
         }
@@ -275,9 +264,6 @@ export default function ToWatchList() {
             {/* // If there is an error render it */}
             {error && <div className="error-message">{error}</div>}
 
-            {successMessage && (
-                <div className="success-message">{successMessage}</div>
-            )}
 
             {/* If marking entry as complete render the form */}
             {entryToComplete && (

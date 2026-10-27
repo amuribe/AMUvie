@@ -1,16 +1,18 @@
 import { useLocation, useNavigate, useParams } from "react-router";
 import { useAuth } from "../context/auth";
-import { use, useEffect, useState, type SubmitEvent } from "react";
+import { useEffect, useState, type SubmitEvent } from "react";
 import type { EditRouteState, ToWatchListEntity, UpdateToWatchListRequest } from "../types/types";
 import { apiRequest } from "../utils/api";
 import './styles/WatchListEdit.css';
 import WatchListEditHeader from "../components/WatchListEditHeader";
+import { useToast } from "../context/toast";
 
 export default function ToWatchListEdit() {
     // Get the watchlist entry from the search params
     const { id: entryId } = useParams();
     const navigate = useNavigate();
     const { apiKey } = useAuth();
+    const { showToast } = useToast();
 
     const [movieId, setMovieId] = useState<number | null>(null);
     const [priority, setPriority] = useState<number>(1);
@@ -74,16 +76,14 @@ export default function ToWatchListEdit() {
 
     const handleUpdateEntry = async (e: SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
-        // Clear the errors from the previous submission if any occured
-        setError(null);
 
         if (!apiKey || !entryId || movieId === null) {
-            setError(!apiKey ? "You must be logged in to edit an entry." : "Invalid watchlist entry.");
+            showToast(!apiKey ? "You must be logged in to edit an entry." : "Invalid watchlist entry.", "error");
             return;
         }
 
         if (!Number.isInteger(priority) || priority < 1 || priority > 10) {
-            setError("Priority must be a whole number from 1 to 10.");
+            showToast("Priority must be a whole number from 1 to 10.", "error");
             return;
         }
 
@@ -93,14 +93,11 @@ export default function ToWatchListEdit() {
             // A entry update uses PUT which includes the movie ID.
             const update: UpdateToWatchListRequest = { movie_id: movieId, priority, notes };
             await apiRequest<void>(`/towatchlist/entries/${entryId}`, "PUT", update, apiKey);
+            showToast("Entry updated");
             navigate("/towatchlist");
 
         } catch (error) {
-            console.error("Error updating entry", error);
-            // If an error of type Error was thrown update state to the error message returned from the api request
-            if (error instanceof Error) {
-                setError(error.message);
-            }
+            showToast(error instanceof Error ? error.message : "Unable to save entry.", "error");
         } finally {
             setSaving(false);
         }

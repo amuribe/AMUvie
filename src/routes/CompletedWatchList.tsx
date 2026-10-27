@@ -4,15 +4,17 @@ import type { CompletedWatchListEntryWithMovie, DropdownOption } from "../types/
 import { apiRequest } from "../utils/api";
 import WatchListCard from "../components/WatchListCard";
 import { Dropdown } from "../components/Dropdown";
+import { useToast } from "../context/toast";
 
 export default function CompletedWatchList() {
     // Ensure user is authorized
     const { apiKey } = useAuth();
 
+    const { showToast } = useToast();
+
     const [watchlist, setWatchList] = useState<CompletedWatchListEntryWithMovie[]>([])
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const [successMessage, setSuccessMessage] = useState<string | null>(null);
     // Defult sort by last watched
     const [sortBy, setSortBy] = useState<string>("date_desc");
 
@@ -73,24 +75,10 @@ export default function CompletedWatchList() {
         fetchCompletedWatchList();
     }, [apiKey]);
 
-    // Set a timeout for success messages
-    useEffect(() => {
-
-        // Only set timeout when there is a message
-        if(!successMessage) {
-            return;
-        }
-
-        const timeoutId = window.setTimeout(() => {
-            setSuccessMessage(null);
-        }, 3000);
-
-        return () => window.clearTimeout(timeoutId);
-    }, [successMessage])
 
     const handleDelete = async (entryId: number) => {
         if (!apiKey) {
-            setError("Not authorized");
+            showToast("You must be logged in to do this.", "error");
             return;
         }
 
@@ -98,9 +86,6 @@ export default function CompletedWatchList() {
         const prevWatchlist = watchlist;
 
         try {
-            // Clear prev errors
-            setError(null);
-            setSuccessMessage(null);
             await apiRequest<void>(
                 `/completedwatchlist/entries/${entryId}`,
                 "DELETE",
@@ -112,49 +97,46 @@ export default function CompletedWatchList() {
                 current.filter((entry) => entry.id !== entryId)
             );
 
-            setSuccessMessage("Removed entry from completed watchlist");
-        } catch {
+            showToast("Removed entry from completed watchlist", "success");
+        } catch(error) {
             // Roll back
             setWatchList(prevWatchlist);
-            setError("Failed to delete an entry from a user's completed watch list")
+            showToast(error instanceof Error ? error.message : "Failed to delete entry", "error");
         }
     };
 
     const handleIncrementWatched = async (entryId: number, currentTimesWatched: number) => {
         if (!apiKey) {
-            setError("Not Authorized");
+            showToast("You must be logged in to do this", "error");
             return;
         }
 
         const prevWatchlist = watchlist;
         const newTimesWatched = currentTimesWatched + 1;
+        const today = new Date().toISOString().split("T")[0];
 
         // Update state
         setWatchList((current) =>
             current.map((e) =>
-                e.id === entryId ? { ...e, times_watched: newTimesWatched, date_last_watched: new Date().toISOString().split("T")[0], } : e
+                e.id === entryId ? { ...e, times_watched: newTimesWatched, date_last_watched: today } : e
             )
         );
 
         try {
-            // Clear previous status
-            setError(null);
-            setSuccessMessage(null);
 
             await apiRequest<void>(
                 `/completedwatchlist/entries/${entryId}/times-watched`,
                 "PATCH",
                 {
                     times_watched: newTimesWatched,
-                    date_last_watched: new Date().toISOString().split("T")[0]
+                    date_last_watched: today
                 },
                 apiKey
             );
-            setSuccessMessage("Watched again");
-        } catch {
+            showToast("Watched again");
+        } catch(error) {
             setWatchList(prevWatchlist);
-            setError("Failed to update watch count")
-
+            showToast(error instanceof Error ? error.message : "Failed to update watch count", "error");
         }
 
     };
@@ -175,9 +157,6 @@ export default function CompletedWatchList() {
 
             {/* // If there is a status render it */}
             {error && <div className="error-message">{error}</div>}
-            {successMessage && (
-                <div className="success-message" role="status" aria-live="polite">{successMessage}</div>
-            )}
 
             <div className="completedwatchlist-content">
                 <div className="completedwatchlist-entries">

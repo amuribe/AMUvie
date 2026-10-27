@@ -4,6 +4,7 @@ import './styles/MovieCard.css'
 import { type MouseEvent, useState } from "react";
 import { useAuth } from "../context/auth";
 import { apiRequest } from "../utils/api";
+import { useToast } from "../context/toast";
 
 export interface MovieCardProps {
     movie: MovieListItem;
@@ -16,110 +17,53 @@ export default function MovieCard({ movie, onWatchlistChange }: MovieCardProps) 
     // Actions such as quick-add, edit entry, etc
     // State for if you're currently adding a movie to the watchlist
     const [adding, setAdding] = useState<boolean>(false);
-    const [error, setError] = useState<string | null>(null);
 
     // Used to navigate the the movie's page
     const navigate = useNavigate();
     const { apiKey, userId } = useAuth();
+    const { showToast } = useToast();
+
+    // The logic for the quick add buttons, movie destination depends on listName
+    const addEntry = async (e:MouseEvent, endpoint: string, body: Record<string, unknown>, listName: string) => {
+        // Prevent navigation to movie details page
+        e.stopPropagation();
+
+        if (!apiKey || !userId) {
+            showToast("You must be logged in to do this", "error");
+            return;
+        }
+
+        setAdding(true);
+
+        try {
+            await apiRequest(endpoint, "POST", body, apiKey);
+            showToast(`"${movie.title}" added to ${listName}.`);
+            onWatchlistChange?.();
+        } catch (error) {
+            showToast(error instanceof Error ? error.message : "Failed to add to watchlist", "error");
+            
+        } finally {
+            setAdding(false);
+        }
+    };
+
+
 
 
     // Add entry to the user's to-watch list
     const handleAddToWatchlist = async (e: MouseEvent) => {
-        // Prevent nav to moviedetails 
-        e.stopPropagation();
-
-        // Ensure user is authorized
-        if (!apiKey || !userId) {
-            setError("You must be logged in to do this");
-            // Safely return
-            return;
-        }
-
-        setAdding(true);
-        // Clear previous errors if there were any
-        setError(null);
-
-        try {
-            // For quick add, default priority(5), and empty notes
-            await apiRequest(
-                "/towatchlist/entries",
-                "POST",
-                {
-                    movie_id: movie.id,
-                    priority: 5,
-                    notes: ""
-                },
-                apiKey
-            );
-            // Stop showing actions
-            alert(`"${movie.title}" added to To-Watch list.`);
-            onWatchlistChange?.();
-
-        } catch (error) {
-            if (error instanceof Error) {
-                setError(error.message);
-            } else {
-                setError("Failed to add to watchlist");
-            }
-        } finally {
-            // Update state to show we're no longer adding
-            setAdding(false);
-        }
+        addEntry(e, "/towatchlist/entries", { movie_id: movie.id, priority: 5, notes: ""}, "To-Watch List");
     }
 
     // Add entry to the user's completed watchlist with no rating and defaults
     const handleAddToCompletedWatchList = async (e: MouseEvent) => {
-        // Prevent nav to moviedetails 
-        e.stopPropagation();
-
-        // Ensure user is authorized
-        if (!apiKey || !userId) {
-            setError("You must be logged in to do this");
-            // Safely return
-            return;
-        }
-
-        setAdding(true);
-        // Clear previous errors if there were any
-        setError(null);
-
-        try {
-            // For quick add, default priority(5), and empty notes
-            await apiRequest(
-                "/completedwatchlist/entries",
-                "POST",
-                {
-                    movie_id: movie.id,
-                    rating: 0,
-                },
-                apiKey
-            );
-            // Stop showing actions
-            alert(`"${movie.title}" added to Completed watch list.`);
-            onWatchlistChange?.();
-
-        } catch (error) {
-            if (error instanceof Error) {
-                setError(error.message);
-            } else {
-                setError("Failed to add to watchlist");
-            }
-        } finally {
-            // Update state to show we're no longer adding
-            setAdding(false);
-        }
+        addEntry(e, "/completedwatchlist/entries", { movie_id: movie.id, rating: 0 }, "Completed Watchlist");
     }
 
 
     return (
         // Make the card redirect you to the movie's detail page when clicked
         <div className="card movie-card">
-            // If there is an error render it
-            {error && (
-                <div className="error-message">
-                    {error}
-                </div>
-            )}
             {/* The poster for the movie, falls back to plain text if the movie has no poster (image error is true) */}
             <div className="movie-poster-container" onClick={() => navigate(`/movies/${movie.id}`)}>
                 {movie.poster && !imageError ? (
