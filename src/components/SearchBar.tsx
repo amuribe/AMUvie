@@ -32,8 +32,12 @@ export default function SearchBar({ onSearch, currentSearch, initialFilterType, 
 
 
             <input
-                type="text"
-                name="search"
+                type="search"
+                name="movie-search"
+                autoComplete="off"
+                autoCapitalize="off"
+                autoCorrect="off"
+                spellCheck={false}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
             />
