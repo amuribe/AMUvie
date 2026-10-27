@@ -107,6 +107,32 @@ export default function CompletedWatchlistEdit() {
         }
     };
 
+    // Clear success message after 3 seconds
+    useEffect(() => {
+        if (!successMessage) {
+            return;
+        }
+
+        const timeoutId = window.setTimeout(() => {
+            setSuccessMessage(null);
+        }, 3000)
+
+        return () => window.clearTimeout(timeoutId);
+    }, [successMessage]);
+
+    // Clear error messages after 5 seconds
+    useEffect(() => {
+        if (!error) {
+            return;
+        }
+
+        const timeoutId = window.setTimeout(() => {
+            setError(null);
+        }, 5000)
+
+        return () => window.clearTimeout(timeoutId);
+    }, [error]);
+
     const handleUpdateTimesWatched = async (e: SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
         // Clear previous error and success messages
@@ -152,7 +178,7 @@ export default function CompletedWatchlistEdit() {
         <div className="watchlist-edit-container">
             {/* If there is a status message, render it */}
             {error && <div className="error-message">{error}</div>}
-            {successMessage && <div className="success-message">{successMessage}</div>}
+            {successMessage && <div className="success-message" role="status" aria-live="polite">{successMessage}</div>}
 
             <WatchListEditHeader
                 title={movie?.title ?? "Edit Entry"}

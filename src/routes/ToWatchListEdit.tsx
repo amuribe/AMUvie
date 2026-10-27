@@ -1,6 +1,6 @@
 import { useLocation, useNavigate, useParams } from "react-router";
 import { useAuth } from "../context/auth";
-import { useEffect, useState, type SubmitEvent } from "react";
+import { use, useEffect, useState, type SubmitEvent } from "react";
 import type { EditRouteState, ToWatchListEntity, UpdateToWatchListRequest } from "../types/types";
 import { apiRequest } from "../utils/api";
 import './styles/WatchListEdit.css';
@@ -57,6 +57,20 @@ export default function ToWatchListEdit() {
         }
         void fetchEntry();
     }, [apiKey, entryId]);
+
+    // Clear error message after 5 seconds
+    useEffect(() => {
+        if (!error) {
+            return;
+        }
+
+        const timeoutId = window.setTimeout(() => {
+            setError(null);
+        }, 5000);
+
+        return () => window.clearTimeout(timeoutId);
+    }, [error]); 
+
 
     const handleUpdateEntry = async (e: SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();

@@ -162,5 +162,36 @@
     border-color: #ff5c5c;
 }
 
+.watch-count-updated {
+    display: inline-block;
+    padding: 0 0 var(--space-xs);
+    border-radius: var(--space-xs);
+    transform-origin: center;
+    animation: watch-count 500ms ease-out;
+}
+
+@keyframes watch-count {
+    0% {
+        transform: scale(1);
+        background: transparent;
+        box-shadow: 0 0 0 0 transparent;
+    }
+
+    30% {
+        transform: scale(1.25); 
+        background-color: var(--primary-hover);
+        color: var(--text-secondary);
+        box-shadow: 0 0 0 0.5rem rgba(245, 210, 171, 0.35);
+    }
+
+    100% {
+        transform: scale(1);
+        background-color: transparent;
+        box-shadow: 0 0 0 0 transparent;
+
+    }
+    
+}
+
 
 

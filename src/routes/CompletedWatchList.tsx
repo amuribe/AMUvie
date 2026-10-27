@@ -73,6 +73,21 @@ export default function CompletedWatchList() {
         fetchCompletedWatchList();
     }, [apiKey]);
 
+    // Set a timeout for success messages
+    useEffect(() => {
+
+        // Only set timeout when there is a message
+        if(!successMessage) {
+            return;
+        }
+
+        const timeoutId = window.setTimeout(() => {
+            setSuccessMessage(null);
+        }, 3000);
+
+        return () => window.clearTimeout(timeoutId);
+    }, [successMessage])
+
     const handleDelete = async (entryId: number) => {
         if (!apiKey) {
             setError("Not authorized");
@@ -135,6 +150,7 @@ export default function CompletedWatchList() {
                 },
                 apiKey
             );
+            setSuccessMessage("Watched again");
         } catch {
             setWatchList(prevWatchlist);
             setError("Failed to update watch count")
@@ -160,7 +176,7 @@ export default function CompletedWatchList() {
             {/* // If there is a status render it */}
             {error && <div className="error-message">{error}</div>}
             {successMessage && (
-                <div className="success-message">{successMessage}</div>
+                <div className="success-message" role="status" aria-live="polite">{successMessage}</div>
             )}
 
             <div className="completedwatchlist-content">

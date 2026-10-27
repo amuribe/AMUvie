@@ -37,6 +37,7 @@ export default function WatchListCard(props: WatchListCardProps) {
     // Destructure the base properties shared by an entry in either watchlist
     const { entry, listType, onDelete } = props;
     const movie = entry.movie;
+    const [watchAnimationId, setWatchListAnimationId] = useState<number>(0);
 
     return (
         <div className="watchlist-card">
@@ -96,7 +97,14 @@ export default function WatchListCard(props: WatchListCardProps) {
                     // Type narrowed to completed watchlist so display stats specific to completedwatchlist
                     <div className="completed-stats">
                         <p className="stat-marker">⭐ {props.entry.rating} / 10.0</p>
-                        <p className="stat-marker"><strong>Times Watched:</strong> {" "} {props.entry.times_watched}x</p>
+                        <p className="stat-marker" aria-live="polite" aria-atomic="true">
+                            <strong>Times Watched:</strong> {" "}
+                            <span
+                                key={props.entry.times_watched}
+                                className={watchAnimationId > 0 ? "watch-count-updated" : undefined}>
+                                {props.entry.times_watched}x
+                            </span>
+                        </p>
                         {props.entry.date_first_watched && (
                             <p className="stat-date"><strong>First Watched:</strong> {props.entry.date_first_watched}</p>
 
@@ -126,7 +134,11 @@ export default function WatchListCard(props: WatchListCardProps) {
                 )}
 
                 {listType === "completedwatch" && props.onIncrementWatched && (
-                    <button onClick={() => props.onIncrementWatched!(entry.id, props.entry.times_watched)}>
+                    <button
+                        onClick={() => {
+                            props.onIncrementWatched!(entry.id, props.entry.times_watched);
+                            setWatchListAnimationId((current) => current + 1);
+                        }}>
                         Watch Again
                     </button>
                 )}
