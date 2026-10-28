@@ -1,6 +1,13 @@
 # AMUvie
 
-AMUvie is a full-stack movie-tracking application. Visitors can browse and search the public movie catalogue, while authenticated users can manage personal to-watch and completed lists.
+A full-stack movie tracker application. Browse the catalogue, keep a to-watch list and log what you've watched in your completed watchlist.
+
+![AMUvie demo](docs/demo.gif)
+
+## Screenshots
+![Browse movies](docs/browse.png)
+![To-Watch List](docs/towatch.png)
+![Completed Watchlist](docs/completedwatch.png)
 
 ## Features
 
@@ -41,3 +48,4 @@ backend/
   includes/         Shared backend utilities
 public/             Static frontend assets
 src/                React application source
+```
